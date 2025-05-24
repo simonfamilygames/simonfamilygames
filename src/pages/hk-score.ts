@@ -16,3 +16,4 @@ document.querySelector('#score-form')!.addEventListener('submit', (e) => {
   const suggestion = total >= 40 ? '✅ 推荐：可打' : '❌ 不打：风险偏高'
   document.querySelector('#result')!.textContent = `总分：${total} 分，建议：${suggestion}`
 })
+export {}
