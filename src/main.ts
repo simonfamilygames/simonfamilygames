@@ -1,3 +1,4 @@
+import './pages/hk-score'
 document.querySelector<HTMLElement>('#app')!.innerHTML = `
   <h1>港股打新评分器</h1>
   <form id="score-form">
