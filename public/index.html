@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hong Kong IPO Evaluation Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Playfair Display', serif;
+      color: #e6d7b5;
+    }
+    .wrapper {
+      background-color: rgba(0,0,0,0.7);
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 12px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    p.desc {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 30px;
+      color: #ccc;
+      font-family: sans-serif;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 10px;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      border-bottom: 1px solid #555;
+    }
+    input[type="number"] {
+      width: 60px;
+      background: #111;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 5px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #d4af37;
+      border: none;
+      border-radius: 6px;
+      color: black;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: rgba(255,255,255,0.05);
+      font-size: 16px;
+    }
+    canvas {
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 8px;
+      max-width: 100%;
+    }
+    @media(max-width: 768px) {
+      .wrapper { margin: 10px; padding: 20px; }
+      h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>HONG KONG IPO<br/>EVALUATION CALCULATOR</h1>
+    <p class="desc">Assess the quality and risk of a Hong Kong IPO using key evaluation dimensions and receive automatic scoring and recommendations</p>
+    <table>
+      <tr><th>Dimension</th><th>Description</th><th>Score</th></tr>
+      <tr><td>Cornerstone Investor</td><td>Reputable institutions or strategic investors</td><td><input type="number" id="score1" value="0" min="0" max="10" /></td></tr>
+      <tr><td>Industry Popularity</td><td>Market hot sector participation</td><td><input type="number" id="score2" value="0" min="0" max="10" /></td></tr>
+      <tr><td>Profitability/Growth</td><td>Earnings or revenue growth</td><td><input type="number" id="score3" value="0" min="0" max="10" /></td></tr>
+      <tr><td>Pricing Reasonability</td><td>Valuation vs peers</td><td><input type="number" id="score4" value="0" min="0" max="10" /></td></tr>
+      <tr><td>Market Sentiment</td><td>IPO activity and sentiment</td><td><input type="number" id="score5" value="0" min="0" max="10" /></td></tr>
+    </table>
+    <button onclick="calculate()">CALCULATE</button>
+    <div class="result" id="resultBox" style="display:none;">
+      <p><strong>Total Score:</strong> <span id="total">0</span></p>
+      <p><strong>Recommendation:</strong> <span id="recommend">-</span></p>
+      <canvas id="chart" width="600" height="300"></canvas>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      const scores = [
+        parseInt(document.getElementById("score1").value),
+        parseInt(document.getElementById("score2").value),
+        parseInt(document.getElementById("score3").value),
+        parseInt(document.getElementById("score4").value),
+        parseInt(document.getElementById("score5").value)
+      ];
+      const total = scores.reduce((a,b) => a + b, 0);
+      let recommendation = "❌ Not Recommended";
+      if (total >= 42) recommendation = "✅ Strongly Apply";
+      else if (total >= 35) recommendation = "⚠️ Consider Applying";
+
+      document.getElementById("total").innerText = total;
+      document.getElementById("recommend").innerText = recommendation;
+      document.getElementById("resultBox").style.display = "block";
+
+      const ctx = document.getElementById('chart').getContext('2d');
+      if (window.chartInstance) window.chartInstance.destroy();
+      window.chartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: [
+            'Cornerstone Investor',
+            'Industry Popularity',
+            'Profitability/Growth',
+            'Pricing Reasonability',
+            'Market Sentiment'
+          ],
+          datasets: [{
+            label: 'Score',
+            data: scores,
+            backgroundColor: 'rgba(212, 175, 55, 0.2)',
+            borderColor: '#d4af37',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 10
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
