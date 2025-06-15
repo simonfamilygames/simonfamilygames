@@ -2,117 +2,102 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPO & RollBot 控制台</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: url('background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            padding: 20px;
-        }
-        .panel, .bot-panel {
-            background: rgba(0,0,0,0.7);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 600px;
-            width: 100%;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%;
-            border-radius: 5px;
-            border: none;
-        }
-        button {
-            background-color: #ffc107;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        #logs {
-            background: black;
-            padding: 10px;
-            height: 150px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>香港 IPO 评估 + Roll Bot 控制台</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      font-family: system-ui, sans-serif;
+    }
+    .glass {
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+    }
+  </style>
 </head>
-<body>
-
-<div class="panel">
-    <h2>香港 IPO 评估计算器</h2>
-    <table>
-        <tr><td>基石投资者</td><td><input id="a1" /></td></tr>
-        <tr><td>行业热度</td><td><input id="a2" /></td></tr>
-        <tr><td>盈利增长</td><td><input id="a3" /></td></tr>
-        <tr><td>定价合理性</td><td><input id="a4" /></td></tr>
-        <tr><td>市场情绪</td><td><input id="a5" /></td></tr>
-    </table>
-    <button onclick="calc()">算</button>
-    <p id="score">总分：0，推荐：❌ 不推荐</p>
-</div>
-
-<div class="bot-panel">
-    <h2>🚀 Roll Bot 控制台</h2>
-    <input id="symbol" placeholder="如 BTC/USDT" value="BTC/USDT" />
-    <input id="amount" placeholder="挂单数量" value="0.001" />
-    <input id="spread" placeholder="点差 USD" value="0.2" />
-    <button onclick="start()">开始</button>
-    <button onclick="stop()" style="background:#dc3545;color:white;">停止</button>
-    <div>状态: <span id="status">空闲</span></div>
-    <div id="logs"></div>
-</div>
-
-<script>
-const backend = "https://rollbot-backend.onrender.com";
-
-function calc() {
-    let s = 0;
-    for (let i = 1; i <= 5; i++) {
-        s += parseInt(document.getElementById("a" + i).value || 0);
+<body class="text-white">
+  <script>
+    if (!localStorage.getItem('auth')) {
+      const pwd = prompt("请输入访问密码");
+      if (pwd !== "song15013668947") {
+        alert("密码错误！");
+        window.location.href = "about:blank";
+      } else {
+        localStorage.setItem("auth", "1");
+      }
     }
-    document.getElementById("score").innerHTML = `总分：${s}，推荐：${s >= 18 ? "✅ 推荐" : "❌ 不推荐"}`;
-}
+  </script>
 
-function start() {
-    const cfg = {
-        symbol: document.getElementById("symbol").value,
-        amount: parseFloat(document.getElementById("amount").value),
-        spread: parseFloat(document.getElementById("spread").value)
-    };
-    fetch(backend + "/start", {
+  <div class="max-w-4xl mx-auto py-10 px-4 space-y-12">
+    <div class="glass p-6 rounded-xl shadow-xl">
+      <h1 class="text-2xl font-bold text-yellow-400 mb-4">香港 IPO 评估计算器</h1>
+      <p class="text-sm mb-4">使用关键评估维度评估香港 IPO 的质量和风险，并获得自动评分和建议</p>
+      <form id="ipo-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <label class="flex flex-col">基石投资者<input class="text-black p-1" type="number"></label>
+        <label class="flex flex-col">行业知名度<input class="text-black p-1" type="number"></label>
+        <label class="flex flex-col">盈利能力/增长<input class="text-black p-1" type="number"></label>
+        <label class="flex flex-col">定价合理性<input class="text-black p-1" type="number"></label>
+        <label class="flex flex-col">市场情绪<input class="text-black p-1" type="number"></label>
+      </form>
+      <button onclick="calcIPO()" class="mt-4 bg-yellow-400 text-black px-4 py-2 rounded font-bold">计算</button>
+      <div class="mt-4 text-sm">
+        总分：<span id="totalScore">0</span><br/>
+        推荐：<span id="recommend" class="text-red-400 font-bold">❌ 不推荐</span>
+      </div>
+    </div>
+
+    <div class="glass p-6 rounded-xl shadow-xl">
+      <h2 class="text-xl font-bold text-white mb-4">🚀 Roll Bot 控制台</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <input id="symbol" class="text-black p-2 rounded" placeholder="交易对" value="BTC/USDT" />
+        <input id="amount" class="text-black p-2 rounded" placeholder="挂单数量" value="0.01" />
+        <input id="spread" class="text-black p-2 rounded" placeholder="点差" value="0.5" />
+      </div>
+      <div class="flex space-x-4 mt-4">
+        <button onclick="startBot()" class="flex-1 bg-yellow-400 text-black py-2 rounded font-bold">开始</button>
+        <button onclick="stopBot()" class="flex-1 bg-red-500 py-2 rounded font-bold">停止</button>
+      </div>
+      <div class="mt-4 text-sm">状态：<span id="status">空闲</span></div>
+      <pre id="logBox" class="bg-black bg-opacity-80 p-4 mt-2 rounded h-48 overflow-y-scroll text-xs"></pre>
+    </div>
+  </div>
+
+  <script>
+    function calcIPO() {
+      const inputs = document.querySelectorAll("#ipo-form input");
+      let sum = 0;
+      inputs.forEach(input => sum += parseInt(input.value || "0"));
+      document.getElementById("totalScore").innerText = sum;
+      document.getElementById("recommend").innerHTML = sum >= 12 ? "✅ 推荐" : "❌ 不推荐";
+    }
+
+    function startBot() {
+      fetch("https://rollbot-backend.onrender.com/start", {
         method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cfg)
-    });
-}
-
-function stop() {
-    fetch(backend + "/stop", { method: "POST" });
-}
-
-let ws = new WebSocket(backend.replace(/^http/, 'ws') + "/ws");
-ws.onmessage = (msg) => {
-    const data = JSON.parse(msg.data);
-    if (data.log) {
-        document.getElementById("logs").textContent += data.log + "\n";
-        document.getElementById("logs").scrollTop = 99999;
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          symbol: document.getElementById("symbol").value,
+          amount: parseFloat(document.getElementById("amount").value),
+          spread: parseFloat(document.getElementById("spread").value)
+        })
+      }).then(r => r.json()).then(data => {
+        document.getElementById("status").innerText = "运行中";
+        document.getElementById("logBox").textContent = data.message;
+      });
     }
-    if (data.status) {
-        document.getElementById("status").textContent = data.status;
-    }
-};
-</script>
 
+    function stopBot() {
+      fetch("https://rollbot-backend.onrender.com/stop", {
+        method: "POST"
+      }).then(r => r.json()).then(data => {
+        document.getElementById("status").innerText = "空闲";
+        document.getElementById("logBox").textContent = data.message;
+      });
+    }
+  </script>
 </body>
 </html>
