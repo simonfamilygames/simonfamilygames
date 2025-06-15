@@ -3,158 +3,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hong Kong IPO Evaluation Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>simonfamilygames</title>
+  <script>
+    if (!localStorage.getItem("auth")) {
+      const pwd = prompt("请输入密码：");
+      if (pwd !== "song15013668947") {
+        alert("密码错误，无法继续访问"); window.stop();
+      } else {
+        localStorage.setItem("auth", "true");
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
+    body {{
       background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: 'Playfair Display', serif;
-      color: #e6d7b5;
-    }
-    .wrapper {
-      background-color: rgba(0,0,0,0.7);
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 12px;
-    }
-    h1 {
-      text-align: center;
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-    p.desc {
-      text-align: center;
-      font-size: 14px;
-      margin-bottom: 30px;
-      color: #ccc;
-      font-family: sans-serif;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      padding: 10px;
-      font-size: 14px;
-    }
-    th {
-      text-align: left;
-      border-bottom: 1px solid #555;
-    }
-    input[type="number"] {
-      width: 60px;
-      background: #111;
-      border: 1px solid #444;
-      color: #fff;
-      padding: 5px;
-      border-radius: 4px;
-      text-align: center;
-    }
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      background-color: #d4af37;
-      border: none;
-      border-radius: 6px;
-      color: black;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    .result {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      background-color: rgba(255,255,255,0.05);
-      font-size: 16px;
-    }
-    canvas {
-      margin-top: 20px;
-      background: #fff;
-      border-radius: 8px;
-      max-width: 100%;
-    }
-    @media(max-width: 768px) {
-      .wrapper { margin: 10px; padding: 20px; }
-      h1 { font-size: 24px; }
-    }
+    }}
   </style>
 </head>
-<body>
-  <div class="wrapper">
-    <h1>HONG KONG IPO<br/>EVALUATION CALCULATOR</h1>
-    <p class="desc">Assess the quality and risk of a Hong Kong IPO using key evaluation dimensions and receive automatic scoring and recommendations</p>
-    <table>
-      <tr><th>Dimension</th><th>Description</th><th>Score</th></tr>
-      <tr><td>Cornerstone Investor</td><td>Reputable institutions or strategic investors</td><td><input type="number" id="score1" value="0" min="0" max="10" /></td></tr>
-      <tr><td>Industry Popularity</td><td>Market hot sector participation</td><td><input type="number" id="score2" value="0" min="0" max="10" /></td></tr>
-      <tr><td>Profitability/Growth</td><td>Earnings or revenue growth</td><td><input type="number" id="score3" value="0" min="0" max="10" /></td></tr>
-      <tr><td>Pricing Reasonability</td><td>Valuation vs peers</td><td><input type="number" id="score4" value="0" min="0" max="10" /></td></tr>
-      <tr><td>Market Sentiment</td><td>IPO activity and sentiment</td><td><input type="number" id="score5" value="0" min="0" max="10" /></td></tr>
+<body class="text-white min-h-screen bg-black/70 backdrop-blur-sm px-4">
+
+  <!-- IPO 评估面板 -->
+  <div class="bg-[#111111dd] max-w-3xl mx-auto mt-10 p-6 rounded-xl shadow-xl">
+    <h1 class="text-3xl font-bold text-center mb-4 text-yellow-200">HONG KONG IPO EVALUATION CALCULATOR</h1>
+    <p class="text-center text-gray-300 mb-6">Assess the quality and risk of a Hong Kong IPO using key evaluation dimensions and receive automatic scoring and recommendations</p>
+    <table class="w-full text-left border-separate border-spacing-y-2 text-sm">
+      <thead><tr><th>Dimension</th><th>Description</th><th>Score</th></tr></thead>
+      <tbody>
+        <tr><td>Cornerstone Investor</td><td>Reputable institutions or strategic investors</td><td><input value="0" /></td></tr>
+        <tr><td>Industry Popularity</td><td>Market hot sector participation</td><td><input value="0" /></td></tr>
+        <tr><td>Profitability/Growth</td><td>Earnings or revenue growth</td><td><input value="0" /></td></tr>
+        <tr><td>Pricing Reasonability</td><td>Valuation vs peers</td><td><input value="0" /></td></tr>
+        <tr><td>Market Sentiment</td><td>IPO activity and sentiment</td><td><input value="0" /></td></tr>
+      </tbody>
     </table>
-    <button onclick="calculate()">CALCULATE</button>
-    <div class="result" id="resultBox" style="display:none;">
-      <p><strong>Total Score:</strong> <span id="total">0</span></p>
-      <p><strong>Recommendation:</strong> <span id="recommend">-</span></p>
-      <canvas id="chart" width="600" height="300"></canvas>
-    </div>
+    <button class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded mt-6 block mx-auto">CALCULATE</button>
+    <div class="mt-4 text-center text-white text-sm">Total Score: 0<br/>Recommendation: ❌ Not Recommended</div>
   </div>
 
+  <!-- 🚀 控制面板模块 -->
+  <section class="bg-[#0f172acc] backdrop-blur-xl p-6 rounded-xl max-w-2xl mx-auto mt-10 shadow-lg">
+    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+      <span>🚀</span><span class="text-white tracking-wide">Roll Bot Control Panel</span>
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-sm">
+      <div><label class="block mb-1 text-gray-300">Symbol:</label><input id="symbol" value="BTC/USDT" class="w-full p-2 rounded bg-black text-white" /></div>
+      <div><label class="block mb-1 text-gray-300">Amount:</label><input id="amount" value="0.001" class="w-full p-2 rounded bg-black text-white" /></div>
+      <div><label class="block mb-1 text-gray-300">Spread (USD):</label><input id="spread" value="0.2" class="w-full p-2 rounded bg-black text-white" /></div>
+      <div class="flex items-end gap-2">
+        <button onclick="startBot()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white w-full">Start</button>
+        <button onclick="stopBot()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white w-full">Stop</button>
+      </div>
+    </div>
+    <p class="text-sm text-gray-300 mb-2">Status: <span id="status" class="font-semibold text-white">Idle</span></p>
+    <div id="log" class="bg-black/90 text-green-400 font-mono p-3 rounded h-40 overflow-y-auto text-xs whitespace-pre-line shadow-inner"></div>
+  </section>
+
   <script>
-    function calculate() {
-      const scores = [
-        parseInt(document.getElementById("score1").value),
-        parseInt(document.getElementById("score2").value),
-        parseInt(document.getElementById("score3").value),
-        parseInt(document.getElementById("score4").value),
-        parseInt(document.getElementById("score5").value)
-      ];
-      const total = scores.reduce((a,b) => a + b, 0);
-      let recommendation = "❌ Not Recommended";
-      if (total >= 42) recommendation = "✅ Strongly Apply";
-      else if (total >= 35) recommendation = "⚠️ Consider Applying";
-
-      document.getElementById("total").innerText = total;
-      document.getElementById("recommend").innerText = recommendation;
-      document.getElementById("resultBox").style.display = "block";
-
-      const ctx = document.getElementById('chart').getContext('2d');
-      if (window.chartInstance) window.chartInstance.destroy();
-      window.chartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: [
-            'Cornerstone Investor',
-            'Industry Popularity',
-            'Profitability/Growth',
-            'Pricing Reasonability',
-            'Market Sentiment'
-          ],
-          datasets: [{
-            label: 'Score',
-            data: scores,
-            backgroundColor: 'rgba(212, 175, 55, 0.2)',
-            borderColor: '#d4af37',
-            borderWidth: 2
-          }]
-        },
-        options: {
-          scales: {
-            r: {
-              beginAtZero: true,
-              max: 10
-            }
-          }
-        }
+    const backend = "https://rollbot-api.onrender.com";  // 你后端部署地址
+    const ws = new WebSocket(backend.replace("http", "ws") + "/ws");
+    ws.onmessage = e => {
+      const data = JSON.parse(e.data);
+      if (data.log) document.getElementById("log").innerHTML += data.log + "\n";
+      if (data.status) document.getElementById("status").textContent = data.status;
+    };
+    function startBot() {
+      fetch(backend + "/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          symbol: document.getElementById("symbol").value,
+          amount: parseFloat(document.getElementById("amount").value),
+          spread: parseFloat(document.getElementById("spread").value)
+        })
       });
+    }
+    function stopBot() {
+      fetch(backend + "/stop", { method: "POST" });
     }
   </script>
 </body>
