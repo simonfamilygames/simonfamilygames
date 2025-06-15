@@ -1,88 +1,118 @@
 
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>simonfamilygames</title>
-  <script>
-    if (!localStorage.getItem("auth")) {
-      const pwd = prompt("请输入密码：");
-      if (pwd !== "song15013668947") {
-        alert("密码错误，无法访问"); window.stop();
-      } else {
-        localStorage.setItem("auth", "true");
-      }
-    }
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background: url('./background.jpg') no-repeat center center fixed;
-      background-size: cover;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPO & RollBot 控制台</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+        }
+        .panel, .bot-panel {
+            background: rgba(0,0,0,0.7);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: #ffc107;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #logs {
+            background: black;
+            padding: 10px;
+            height: 150px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
-<body class="text-white min-h-screen bg-black/70 backdrop-blur-md px-4 pb-20">
+<body>
 
-  <!-- IPO 打分页面，结构保持不变 -->
-  <div class="bg-[#111111cc] max-w-3xl mx-auto mt-10 p-6 rounded-xl shadow-xl">
-    <h1 class="text-2xl font-bold text-center mb-4 text-yellow-300">香港 IPO 评估计算器</h1>
-    <p class="text-center text-gray-300 mb-6">使用关键评估维度评估香港 IPO 的质量和风险，并获得自动评分和建议</p>
-    <table class="w-full text-left border-separate border-spacing-y-2 text-sm">
-      <thead><tr><th>尺寸</th><th>描述</th><th>得分</th></tr></thead>
-      <tbody>
-        <tr><td>基石投资者</td><td>信誉良好的机构或战略投资者</td><td><input value="0" class="w-16 text-center"/></td></tr>
-        <tr><td>行业热度</td><td>市场热门行业参与</td><td><input value="0" class="w-16 text-center"/></td></tr>
-        <tr><td>盈利能力/增长</td><td>收入或收入增长</td><td><input value="0" class="w-16 text-center"/></td></tr>
-        <tr><td>定价合理性</td><td>估值与同行</td><td><input value="0" class="w-16 text-center"/></td></tr>
-        <tr><td>市场情绪</td><td>IPO 活动和情绪</td><td><input value="0" class="w-16 text-center"/></td></tr>
-      </tbody>
+<div class="panel">
+    <h2>香港 IPO 评估计算器</h2>
+    <table>
+        <tr><td>基石投资者</td><td><input id="a1" /></td></tr>
+        <tr><td>行业热度</td><td><input id="a2" /></td></tr>
+        <tr><td>盈利增长</td><td><input id="a3" /></td></tr>
+        <tr><td>定价合理性</td><td><input id="a4" /></td></tr>
+        <tr><td>市场情绪</td><td><input id="a5" /></td></tr>
     </table>
-    <button class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded mt-6 block mx-auto">算</button>
-    <div class="mt-4 text-center text-white text-sm">总分：0<br/>推荐：❌ 不推荐</div>
-  </div>
+    <button onclick="calc()">算</button>
+    <p id="score">总分：0，推荐：❌ 不推荐</p>
+</div>
 
-  <!-- 滚单控制面板 -->
-  <section class="bg-[#1e293bcc] p-6 rounded-xl max-w-xl mx-auto mt-12 shadow-lg backdrop-blur-md text-white">
-    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-      <span>🚀</span> <span class="tracking-wide">Roll Bot 控制面板</span>
-    </h2>
-    <div class="grid gap-4 sm:grid-cols-2 text-sm">
-      <div><label>交易对：</label><input id="symbol" value="BTC/USDT" class="w-full p-2 bg-black rounded"/></div>
-      <div><label>挂单数量：</label><input id="amount" value="0.001" class="w-full p-2 bg-black rounded"/></div>
-      <div><label>点差 (USD)：</label><input id="spread" value="0.2" class="w-full p-2 bg-black rounded"/></div>
-      <div class="flex items-end gap-2">
-        <button onclick="startBot()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded w-full">开始</button>
-        <button onclick="stopBot()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full">停止</button>
-      </div>
-    </div>
-    <div class="mt-4 text-sm">状态：<span id="status" class="text-green-400">空闲</span></div>
-    <pre id="log" class="bg-black/80 mt-4 p-3 rounded h-48 overflow-y-auto text-xs text-green-300 font-mono whitespace-pre-line"></pre>
-  </section>
+<div class="bot-panel">
+    <h2>🚀 Roll Bot 控制台</h2>
+    <input id="symbol" placeholder="如 BTC/USDT" value="BTC/USDT" />
+    <input id="amount" placeholder="挂单数量" value="0.001" />
+    <input id="spread" placeholder="点差 USD" value="0.2" />
+    <button onclick="start()">开始</button>
+    <button onclick="stop()" style="background:#dc3545;color:white;">停止</button>
+    <div>状态: <span id="status">空闲</span></div>
+    <div id="logs"></div>
+</div>
 
-  <script>
-    const backend = "https://rollbot-backend.onrender.com";
-    const ws = new WebSocket(backend.replace("http", "ws") + "/ws");
-    ws.onmessage = e => {
-      const data = JSON.parse(e.data);
-      if (data.log) document.getElementById("log").textContent += data.log + "\n";
-      if (data.status) document.getElementById("status").textContent = data.status;
+<script>
+const backend = "https://rollbot-backend.onrender.com";
+
+function calc() {
+    let s = 0;
+    for (let i = 1; i <= 5; i++) {
+        s += parseInt(document.getElementById("a" + i).value || 0);
+    }
+    document.getElementById("score").innerHTML = `总分：${s}，推荐：${s >= 18 ? "✅ 推荐" : "❌ 不推荐"}`;
+}
+
+function start() {
+    const cfg = {
+        symbol: document.getElementById("symbol").value,
+        amount: parseFloat(document.getElementById("amount").value),
+        spread: parseFloat(document.getElementById("spread").value)
     };
-    function startBot() {
-      fetch(backend + "/start", {
+    fetch(backend + "/start", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          symbol: document.getElementById("symbol").value,
-          amount: parseFloat(document.getElementById("amount").value),
-          spread: parseFloat(document.getElementById("spread").value)
-        })
-      });
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cfg)
+    });
+}
+
+function stop() {
+    fetch(backend + "/stop", { method: "POST" });
+}
+
+let ws = new WebSocket(backend.replace(/^http/, 'ws') + "/ws");
+ws.onmessage = (msg) => {
+    const data = JSON.parse(msg.data);
+    if (data.log) {
+        document.getElementById("logs").textContent += data.log + "\n";
+        document.getElementById("logs").scrollTop = 99999;
     }
-    function stopBot() {
-      fetch(backend + "/stop", { method: "POST" });
+    if (data.status) {
+        document.getElementById("status").textContent = data.status;
     }
-  </script>
+};
+</script>
+
 </body>
 </html>
