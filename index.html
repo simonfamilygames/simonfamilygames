@@ -62,7 +62,7 @@
   </section>
 
   <script>
-    const backend = "https://rollbot-api.onrender.com";
+    const backend = "https://rollbot-backend.onrender.com";
     const ws = new WebSocket(backend.replace("http", "ws") + "/ws");
     ws.onmessage = e => {
       const data = JSON.parse(e.data);
