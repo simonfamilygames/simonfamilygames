@@ -1,15 +1,15 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hans">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>simonfamilygames</title>
   <script>
     if (!localStorage.getItem("auth")) {
       const pwd = prompt("请输入密码：");
       if (pwd !== "song15013668947") {
-        alert("密码错误，无法继续访问"); window.stop();
+        alert("密码错误，无法访问"); window.stop();
       } else {
         localStorage.setItem("auth", "true");
       }
@@ -17,56 +17,56 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {{
-      background: url('background.jpg') no-repeat center center fixed;
+    body {
+      background: url('./background.jpg') no-repeat center center fixed;
       background-size: cover;
-    }}
+    }
   </style>
 </head>
-<body class="text-white min-h-screen bg-black/70 backdrop-blur-sm px-4">
+<body class="text-white min-h-screen bg-black/70 backdrop-blur-md px-4 pb-20">
 
-  <!-- IPO 评估面板 -->
-  <div class="bg-[#111111dd] max-w-3xl mx-auto mt-10 p-6 rounded-xl shadow-xl">
-    <h1 class="text-3xl font-bold text-center mb-4 text-yellow-200">HONG KONG IPO EVALUATION CALCULATOR</h1>
-    <p class="text-center text-gray-300 mb-6">Assess the quality and risk of a Hong Kong IPO using key evaluation dimensions and receive automatic scoring and recommendations</p>
+  <!-- IPO 打分页面，结构保持不变 -->
+  <div class="bg-[#111111cc] max-w-3xl mx-auto mt-10 p-6 rounded-xl shadow-xl">
+    <h1 class="text-2xl font-bold text-center mb-4 text-yellow-300">香港 IPO 评估计算器</h1>
+    <p class="text-center text-gray-300 mb-6">使用关键评估维度评估香港 IPO 的质量和风险，并获得自动评分和建议</p>
     <table class="w-full text-left border-separate border-spacing-y-2 text-sm">
-      <thead><tr><th>Dimension</th><th>Description</th><th>Score</th></tr></thead>
+      <thead><tr><th>尺寸</th><th>描述</th><th>得分</th></tr></thead>
       <tbody>
-        <tr><td>Cornerstone Investor</td><td>Reputable institutions or strategic investors</td><td><input value="0" /></td></tr>
-        <tr><td>Industry Popularity</td><td>Market hot sector participation</td><td><input value="0" /></td></tr>
-        <tr><td>Profitability/Growth</td><td>Earnings or revenue growth</td><td><input value="0" /></td></tr>
-        <tr><td>Pricing Reasonability</td><td>Valuation vs peers</td><td><input value="0" /></td></tr>
-        <tr><td>Market Sentiment</td><td>IPO activity and sentiment</td><td><input value="0" /></td></tr>
+        <tr><td>基石投资者</td><td>信誉良好的机构或战略投资者</td><td><input value="0" class="w-16 text-center"/></td></tr>
+        <tr><td>行业热度</td><td>市场热门行业参与</td><td><input value="0" class="w-16 text-center"/></td></tr>
+        <tr><td>盈利能力/增长</td><td>收入或收入增长</td><td><input value="0" class="w-16 text-center"/></td></tr>
+        <tr><td>定价合理性</td><td>估值与同行</td><td><input value="0" class="w-16 text-center"/></td></tr>
+        <tr><td>市场情绪</td><td>IPO 活动和情绪</td><td><input value="0" class="w-16 text-center"/></td></tr>
       </tbody>
     </table>
-    <button class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded mt-6 block mx-auto">CALCULATE</button>
-    <div class="mt-4 text-center text-white text-sm">Total Score: 0<br/>Recommendation: ❌ Not Recommended</div>
+    <button class="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded mt-6 block mx-auto">算</button>
+    <div class="mt-4 text-center text-white text-sm">总分：0<br/>推荐：❌ 不推荐</div>
   </div>
 
-  <!-- 🚀 控制面板模块 -->
-  <section class="bg-[#0f172acc] backdrop-blur-xl p-6 rounded-xl max-w-2xl mx-auto mt-10 shadow-lg">
-    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
-      <span>🚀</span><span class="text-white tracking-wide">Roll Bot Control Panel</span>
+  <!-- 滚单控制面板 -->
+  <section class="bg-[#1e293bcc] p-6 rounded-xl max-w-xl mx-auto mt-12 shadow-lg backdrop-blur-md text-white">
+    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+      <span>🚀</span> <span class="tracking-wide">Roll Bot 控制面板</span>
     </h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 text-sm">
-      <div><label class="block mb-1 text-gray-300">Symbol:</label><input id="symbol" value="BTC/USDT" class="w-full p-2 rounded bg-black text-white" /></div>
-      <div><label class="block mb-1 text-gray-300">Amount:</label><input id="amount" value="0.001" class="w-full p-2 rounded bg-black text-white" /></div>
-      <div><label class="block mb-1 text-gray-300">Spread (USD):</label><input id="spread" value="0.2" class="w-full p-2 rounded bg-black text-white" /></div>
+    <div class="grid gap-4 sm:grid-cols-2 text-sm">
+      <div><label>交易对：</label><input id="symbol" value="BTC/USDT" class="w-full p-2 bg-black rounded"/></div>
+      <div><label>挂单数量：</label><input id="amount" value="0.001" class="w-full p-2 bg-black rounded"/></div>
+      <div><label>点差 (USD)：</label><input id="spread" value="0.2" class="w-full p-2 bg-black rounded"/></div>
       <div class="flex items-end gap-2">
-        <button onclick="startBot()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded text-white w-full">Start</button>
-        <button onclick="stopBot()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white w-full">Stop</button>
+        <button onclick="startBot()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded w-full">开始</button>
+        <button onclick="stopBot()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full">停止</button>
       </div>
     </div>
-    <p class="text-sm text-gray-300 mb-2">Status: <span id="status" class="font-semibold text-white">Idle</span></p>
-    <div id="log" class="bg-black/90 text-green-400 font-mono p-3 rounded h-40 overflow-y-auto text-xs whitespace-pre-line shadow-inner"></div>
+    <div class="mt-4 text-sm">状态：<span id="status" class="text-green-400">空闲</span></div>
+    <pre id="log" class="bg-black/80 mt-4 p-3 rounded h-48 overflow-y-auto text-xs text-green-300 font-mono whitespace-pre-line"></pre>
   </section>
 
   <script>
-    const backend = "https://rollbot-api.onrender.com";  // 你后端部署地址
+    const backend = "https://rollbot-api.onrender.com";
     const ws = new WebSocket(backend.replace("http", "ws") + "/ws");
     ws.onmessage = e => {
       const data = JSON.parse(e.data);
-      if (data.log) document.getElementById("log").innerHTML += data.log + "\n";
+      if (data.log) document.getElementById("log").textContent += data.log + "\n";
       if (data.status) document.getElementById("status").textContent = data.status;
     };
     function startBot() {
